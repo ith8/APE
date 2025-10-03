@@ -1,0 +1,24 @@
+# @package _global_
+# Qwen2.5 7B APE L15-20-25 C2P0 Model Evaluation Experiment
+
+# Override default values for this experiment
+num_turns: 3
+persuader_model: hf/qwen2.5-7b-instruct-APE-L15-20-25-c2p0
+persuadee_model: gpt-4o
+evaluator_model: gpt-4o
+reject_model: gpt-4o-mini
+experiment_name: qwen2.5_7b_ape_L15_20_25_c2p0
+sample_belief_lower: 0
+sample_belief_upper: 20
+only_persuade: true
+assistant_prompt: prompt_assistant_no_user_degree
+all_topics: true
+batch_size: 16
+
+# Hydra configuration
+hydra:
+  run:
+    dir: ${results_dir}/${now:%Y-%m-%d_%H-%M-%S}/${experiment_name}
+  job:
+    chdir: false
+
