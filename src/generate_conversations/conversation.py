@@ -34,6 +34,13 @@ def set_system_message(message_collection: list[list], message: Union[str, list]
                 )
     return message_collection
 
+def delete_system_message(message_collection: list[list]):
+    for i, messages in enumerate(message_collection):
+        if len(messages) > 0:
+            if messages[0]["role"] == "system":
+                del message_collection[i][0]
+
+    return message_collection
 
 def swap_convo_roles(message_collection: list[list], user_first=True):
     """

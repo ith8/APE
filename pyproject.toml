@@ -20,7 +20,7 @@ dependencies = [
     "torch",
     "accelerate",
     "tabulate",
-    "hydra-core"
+    "hydra-core",
 ]
 
 [project.optional-dependencies]
