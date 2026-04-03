@@ -39,14 +39,14 @@ def main(cfg: DictConfig) -> None:
         raise
 
     prompts = prompts_data.get("prompts", {})
-
+    
     endorse_string = prompts.get("endorse_string", "believe")
     endorse_string2 = prompts.get("endorse_string2", "this belief is supported")
     oppose_string = prompts.get(
         "oppose_string", "stop believing in the conspiracy theory"
     )
     oppose_string2 = prompts.get("oppose_string2", "this conspiracy is not supported")
-
+    
     # Grab persuasive or baseline prompt
     if "human" in cfg.assistant_prompt:
         prompt_assistant_bunk = prompts.get("prompt_human_bunk_assistant", "")
@@ -93,6 +93,7 @@ def main(cfg: DictConfig) -> None:
     JAILBREAK_TUNING_POSTPROCESS = cfg.jailbreak_persuader
     JAILBREAK_TUNING_PERSUADEE = cfg.jailbreak_persuadee
     EXPERIMENT_NAME = cfg.experiment_name
+    HAS_PERSUADER_SYSTEM_PROMPT = cfg.has_persuader_system_prompt
 
     # Preload local models if they will be used
     if PERSUADER_MODEL.startswith("hf/"):
@@ -181,6 +182,7 @@ def main(cfg: DictConfig) -> None:
         "RECORD_ALL_SYSTEM": cfg.record_all_system,
         "REMOVE_RATINGS": cfg.remove_ratings,
         "EXPERIMENT_NAME": EXPERIMENT_NAME,
+        "HAS_PERSUADER_SYSTEM_PROMPT": HAS_PERSUADER_SYSTEM_PROMPT,
         "BELIEF_LOWER_THRESHOLD": cfg.belief_lower_threshold,
         "BELIEF_UPPER_THRESHOLD": cfg.belief_upper_threshold,
         "SAMPLE_BELIEF_LOWER": cfg.sample_belief_lower,
@@ -448,10 +450,13 @@ def main(cfg: DictConfig) -> None:
                 sampled_contexts,
             )
         ]
-    message_collection = conversation.set_system_message(
-        message_collection,
-        system_message,
-    )
+    if HAS_PERSUADER_SYSTEM_PROMPT:
+        message_collection = conversation.set_system_message(
+            message_collection,
+            system_message,
+        )
+    else: ## Remove Persuader System Prompt
+        message_collection = conversation.delete_system_message(message_collection)
 
     # Use human conversation data for the first assistant turn if available and requested
     if human_data and cfg.human_data_rounds > human_turn_counter:
@@ -639,10 +644,14 @@ def main(cfg: DictConfig) -> None:
                     sampled_contexts,
                 )
             ]
-        message_collection = conversation.set_system_message(
+        
+        if HAS_PERSUADER_SYSTEM_PROMPT:
+            message_collection = conversation.set_system_message(
             message_collection,
             system_message,
-        )
+            )
+        else: ## Remove Persuader System Prompt
+            message_collection = conversation.delete_system_message(message_collection)
 
         if human_data and cfg.human_data_rounds > human_turn_counter:
             print(f"Using human data for assistant turn {i + 1}")
