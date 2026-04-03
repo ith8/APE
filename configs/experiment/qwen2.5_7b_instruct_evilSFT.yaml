@@ -16,7 +16,7 @@ only_persuade: false
 assistant_prompt: prompt_assistant_dont_persuade_no_user_degree
 all_topics: true
 batch_size: 4
-has_persuader_system_prompt: false
+has_persuader_system_prompt: true
 
 prompts_file: src/prompts/additional_prompts_all.yaml
 
