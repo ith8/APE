@@ -55,6 +55,7 @@ remove_ratings: false
 baseline_persuasion: false
 only_persuade: false
 rephrase_topics: false
+has_persuader_system_prompt: true
 
 # Evaluation settings
 evaluation_scale: 2
